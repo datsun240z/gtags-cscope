@@ -144,6 +144,32 @@ function! s:Error(msg)
     endif
 endfunction
 
+function! s:RbInGitRepo()
+    let cmd = "git root"
+    let cmd_output = system(cmd)
+    if v:shell_error != 0
+        return ''
+    endif
+    return strpart(cmd_output, 0, strlen(cmd_output) - 1)
+endfunction
+
+function! s:RbGitRoot()
+    let path = s:RbInGitRepo()
+    if path == ''
+        return
+    endif
+    let root = fnamemodify(path, ":t" )
+    if root == "accton-as5916-54xl"
+        let $GTAGSLIBPATH = '/localdata/rbelaire/yocto/source/evernight/ciena/oneos-linux'
+    elseif root == "evernight-device-manager"
+        let $GTAGSLIBPATH = '/localdata/rbelaire/yocto/source/evernight/ciena/python-evernight'
+    " else
+    "     echom root
+    "     let $GTAGSLIBPATH = '/localdata/rbelaire/yocto/source/evernight/ciena/oneos-linux/include/linux'
+    "     echom $GTAGSLIBPATH
+    endif
+endfunction
+
 function! s:GtagsCscope_GtagsRoot()
     let cmd = s:global_command . " -pq"
     let cmd_output = system(cmd)
@@ -166,6 +192,9 @@ function! s:GtagsCscope()
     if gtagsroot == ''
         return
     endif
+
+    call s:RbGitRoot()
+
     "
     " Load gtags-cscope.
     "
@@ -242,24 +271,24 @@ function! s:GtagsCscope()
             :nmap <C-@><C-@>f :vert scs find f <C-R>=expand("<cfile>")<CR><CR>
             :nmap <C-@><C-@>i :vert scs find i <C-R>=expand("<cfile>")<CR><CR>
             ":nmap <C-@><C-@>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
-	endif
-	" tag command
-	:nmap <C-\><C-n> :tn<CR>
-	:nmap <C-\><C-p> :tp<CR>
-	:nmap <C-n> :cn<CR>
-	:nmap <C-p> :cp<CR>
-	" Context search. See the --from-here option of global(1).
-	:nmap <C-\><C-\><C-]> :cs find d <C-R>=expand("<cword>")<CR>:<C-R>=line('.')<CR>:%<CR>
-	"Ron :nmap <2-LeftMouse>   :cs find d <C-R>=expand("<cword>")<CR>:<C-R>=line('.')<CR>:%<CR>
-	"Ron :nmap g<LeftMouse>    :cs find d <C-R>=expand("<cword>")<CR>:<C-R>=line('.')<CR>:%<CR>
-	"Ron :nmap <C-LeftMouse>   :cs find d <C-R>=expand("<cword>")<CR>:<C-R>=line('.')<CR>:%<CR>
-	" The following mappings are unnecessary, because you can use the default mapping.
-	":nmap g<RightMouse>   <C-t>
-	":nmap <C-RightMouse>  <C-t>
-	" Short cut key
-	:nmap <C-\><SPACE> :cs find<SPACE>
-	:nmap <C-@><SPACE> :scs find<SPACE>
-	:nmap <C-@><C-@><SPACE> :vert scs find<SPACE>
+    endif
+    " tag command
+    :nmap <C-\><C-n> :tn<CR>
+    :nmap <C-\><C-p> :tp<CR>
+    :nmap <C-n> :cn<CR>
+    :nmap <C-p> :cp<CR>
+    " Context search. See the --from-here option of global(1).
+    :nmap <C-\><C-\><C-]> :cs find d <C-R>=expand("<cword>")<CR>:<C-R>=line('.')<CR>:%<CR>
+    "Ron :nmap <2-LeftMouse>   :cs find d <C-R>=expand("<cword>")<CR>:<C-R>=line('.')<CR>:%<CR>
+    "Ron :nmap g<LeftMouse>    :cs find d <C-R>=expand("<cword>")<CR>:<C-R>=line('.')<CR>:%<CR>
+    "Ron :nmap <C-LeftMouse>   :cs find d <C-R>=expand("<cword>")<CR>:<C-R>=line('.')<CR>:%<CR>
+    " The following mappings are unnecessary, because you can use the default mapping.
+    ":nmap g<RightMouse>   <C-t>
+    ":nmap <C-RightMouse>  <C-t>
+    " Short cut key
+    :nmap <C-\><SPACE> :cs find<SPACE>
+    :nmap <C-@><SPACE> :scs find<SPACE>
+    :nmap <C-@><C-@><SPACE> :vert scs find<SPACE>
     endif
 endfunction
 
