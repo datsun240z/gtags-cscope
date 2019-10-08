@@ -156,18 +156,23 @@ endfunction
 function! s:RbGitRoot()
     let path = s:RbInGitRepo()
     if path == ''
-        return
+        return ''
     endif
     let root = fnamemodify(path, ":t" )
     if root == "accton-as5916-54xl"
         let $GTAGSLIBPATH = '/localdata/rbelaire/yocto/source/evernight/ciena/oneos-linux'
+        return '/localdata/rbelaire/yocto/source/evernight/ciena/oneos-linux'
     elseif root == "evernight-device-manager"
         let $GTAGSLIBPATH = '/localdata/rbelaire/yocto/source/evernight/ciena/python-evernight'
-    " else
-    "     echom root
-    "     let $GTAGSLIBPATH = '/localdata/rbelaire/yocto/source/evernight/ciena/oneos-linux/include/linux'
-    "     echom $GTAGSLIBPATH
+        return '/localdata/rbelaire/yocto/source/evernight/ciena/python-evernight'
+    elseif root =~ "^ciena-"
+        let $GTAGSLIBPATH = '/localdata/rbelaire/yocto/source/evernight/ciena/oneos-linux'
+        return '/localdata/rbelaire/yocto/source/evernight/ciena/oneos-linux'
+    elseif root =~ "user$"
+        let $GTAGSLIBPATH = '/localdata/rbelaire/yocto/source/evernight/ciena/oneos-linux'
+        return '/localdata/rbelaire/yocto/source/evernight/ciena/oneos-linux'
     endif
+    return ''
 endfunction
 
 function! s:GtagsCscope_GtagsRoot()
@@ -193,10 +198,16 @@ function! s:GtagsCscope()
         return
     endif
 
-    call s:RbGitRoot()
 
     "
     " Load gtags-cscope.
+    "
+    let gtagslib = s:RbGitRoot()
+    " if gtagslib != ''
+    "     let s:command = "cs add " . gtagslib . "/GTAGS "
+    "     " let s:command = s:command . ' . -' . s:option
+    "     exe s:command
+    " endif
     "
     set csprg=gtags-cscope
     let s:command = "cs add " . gtagsroot . "/GTAGS"
